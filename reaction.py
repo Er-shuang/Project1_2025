@@ -1,7 +1,8 @@
-# Version 4
+# Version 6
 # Author: Xuanru Guo
 # Date: 9/4/2025
-# get players name using input
+# use loop to play game again
+# use flag to stop pressing button when the LED is still on
 
 # import modules and libraries
 from gpiozero import LED, Button
@@ -17,20 +18,36 @@ left_button = Button(14)
 left_name = input("left player name is ")
 right_name = input("right player name is ")
 
-# wait for 5 seconds and turn the LED on
-led.on()
-# the length of time is random
-sleep(uniform(5,10))
-led.off()
+can_press = False
 
 # tell which player press the button
 def pressed(button):
-	if button.pin.number == 14:
-		print(left_name + ' won the game')
-	else:
-		print(right_name + ' won the game')
-	exit()
+    global can_press
+    if can_press:
+        if button.pin.number == 14:
+            print(left_name + ' won the game')
+        else:
+            print(right_name + ' won the game')
+        can_press = False
 
-# when the button is pressed, the funtion is called
+
+# when the button is pressed, the function is called
 right_button.when_pressed = pressed
 left_button.when_pressed = pressed
+
+try:
+    while True:
+        print("Game starts...")
+        led.on()
+        can_press = False
+        sleep(uniform(5, 10))
+        led.off()
+        can_press = True
+        # rest time before next game
+        sleep(1.5)
+except KeyboardInterrupt:
+    print("Game over")
+    led.close()
+    right_button.close()
+    left_button.close()
+    

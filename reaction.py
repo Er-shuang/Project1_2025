@@ -29,6 +29,7 @@ def pressed(button):
 		print(left_name + ' won the game')
 	else:
 		print(right_name + ' won the game')
+	exit()
 
 # when the button is pressed, the funtion is called
 right_button.when_pressed = pressed
